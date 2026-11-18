@@ -1,3 +1,64 @@
+# CloudRedirect — LeGo fork (testing)
+
+A fork of [CloudRedirect](https://github.com/crghofficial/cloudredirect) by crghofficial,
+focused on SteamOS handhelds (tested target: Lenovo Legion Go). Everything below the line
+is the upstream README.
+
+## What this fork changes
+
+**Google Drive / cloud connection on SteamOS (Linux only)**
+
+Some SteamOS setups fail every cloud request with `curl failed: 60` even though the
+system itself reaches Google fine. This fork:
+
+- **Logs the real reason** for connection failures: curl's error text and OpenSSL's
+  verification code (`verify=20`, etc.), plus a one-time `[TLS-DIAG]` dump of the CA
+  bundle, clock and relevant environment.
+- **Falls back to a built-in certificate list** (Mozilla's, via certifi) when the system
+  certificate bundle can't verify the server. Once the built-in list works it is used for
+  the rest of the session. Certificate verification is never turned off.
+
+Nothing else is changed: SLSsteam integration, Steam hooks and save detection are the
+same as upstream.
+
+## Install the test build (SteamOS, Desktop Mode → Konsole)
+
+You need the official CloudRedirect already set up (app installed, Deploy clicked,
+signed in). Back up any saves you care about first.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kazzzzzzzzzzuya/cloudsave-decky/claude/hopeful-ramanujan-ggb0pu/scripts/install-lego.sh | bash
+```
+
+The script downloads `prebuilt/linux/cloud_redirect.so`, checks its checksum, closes
+Steam, keeps the official file as `cloud_redirect.so.official`, and swaps in the fork.
+
+While testing, **don't click Update/Deploy in the CloudRedirect app and don't run
+Headcrab Updater**: both put the official file back.
+
+Check what happened after launching a game:
+
+```bash
+grep -aE "LeGo fork|\[TLS|TLS-DIAG|curl failed" ~/.config/CloudRedirect/cloud_redirect.log | tail -20
+```
+
+## Undo
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kazzzzzzzzzzuya/cloudsave-decky/claude/hopeful-ramanujan-ggb0pu/scripts/uninstall-lego.sh | bash
+```
+
+## Building
+
+```bash
+linux-build/build.sh          # Docker, Ubuntu 22.04 + GCC 12 -> dist/cloud_redirect.so
+```
+
+OpenSSL 3.3.2 and curl 8.10.1 are built statically for 32-bit, matching upstream's
+versions. `tests/linux/run_tls_fallback_test.sh` checks the fallback logic.
+
+---
+
 # CloudRedirect
 
 ""Steam Cloud"" for 'lua' games.
