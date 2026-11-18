@@ -1,8 +1,35 @@
 # CloudRedirect — LeGo fork (testing)
 
 A fork of [CloudRedirect](https://github.com/crghofficial/cloudredirect) by crghofficial,
-focused on SteamOS handhelds (tested target: Lenovo Legion Go). Everything below the line
-is the upstream README.
+focused on SteamOS handhelds (tested target: Lenovo Legion Go). It combines:
+
+- **64-bit Steam client support** (`steamrt64`) by [The-J-01](https://github.com/The-J-01/cloudredirect)
+  (branch `fix/linux-steamrt64`, upstream PR #6). See [LINUX64.md](LINUX64.md).
+- **This fork's Google Drive / TLS fix** described below.
+
+Everything below the second line is the upstream README.
+
+## Install on 64-bit Steam (current SteamOS)
+
+Check first: `file -L ~/.local/share/Steam/steamrt64/steam` should say *64-bit*.
+You need the official CloudRedirect already set up (app installed, Deploy clicked, signed in)
+and SLSsteam's 64-bit build. Back up saves you care about.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kazzzzzzzzzzuya/cloudsave-decky/claude/hopeful-ramanujan-ggb0pu/scripts/install-lego64.sh | bash
+```
+
+Before changing anything, the installer checks your exact `steamclient.so` with read-only
+probes (protobuf helper signatures, KeyValues resolver, cloud transport vtables) and stops if
+your Steam build doesn't match. It then backs up the deployed `cloud_redirect.so` and
+`cloud_redirect_cli` as `*.official` and installs the 64-bit pair from `prebuilt/linux64/`.
+
+Known limits (from the 64-bit port): playtime tracking is not ported yet (save sync works
+without it); live sync on SteamOS Game Mode is not yet confirmed; future Steam updates may
+need new signatures.
+
+The older 32-bit test build (`scripts/install-lego.sh`, `prebuilt/linux/`) is only for
+32-bit Steam clients.
 
 ## What this fork changes
 
@@ -21,7 +48,7 @@ system itself reaches Google fine. This fork:
 Nothing else is changed: SLSsteam integration, Steam hooks and save detection are the
 same as upstream.
 
-## Install the test build (SteamOS, Desktop Mode → Konsole)
+## Install the 32-bit test build (legacy 32-bit Steam only)
 
 You need the official CloudRedirect already set up (app installed, Deploy clicked,
 signed in). Back up any saves you care about first.
@@ -51,7 +78,11 @@ curl -fsSL https://raw.githubusercontent.com/kazzzzzzzzzzuya/cloudsave-decky/cla
 ## Building
 
 ```bash
-linux-build/build.sh          # Docker, Ubuntu 22.04 + GCC 12 -> dist/cloud_redirect.so
+linux-build/build.sh          # 32-bit: Docker, Ubuntu 22.04 + GCC 12 -> dist/cloud_redirect.so
+# 64-bit: scripts/build-linux64.sh (upstream PR #6), or in Docker without
+# Debian/Launchpad access:
+docker run --rm -v "$PWD":/src -v "$PWD/.cache/linux-build64":/work64 ubuntu:20.04 \
+    bash /src/linux-build/build64-in-container.sh   # -> dist64/
 ```
 
 OpenSSL 3.3.2 and curl 8.10.1 are built statically for 32-bit, matching upstream's

@@ -36,3 +36,4 @@ release-*/
 
 .cache/
 !tests/linux/
+dist64/
