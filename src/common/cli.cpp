@@ -1458,7 +1458,7 @@ extern "C"
 #ifdef _WIN32
 __declspec(dllexport)
 #else
-__attribute__((visibility("default")))  // built with -fvisibility=hidden; the CLI dlsym()s this
+__attribute__((visibility("default")))
 #endif
 int CloudRedirect_CliMain(int argc, char** argv) {
 #ifndef _WIN32

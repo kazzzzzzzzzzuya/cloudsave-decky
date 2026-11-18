@@ -16,4 +16,8 @@ fi
 
 cp -f "$BACKUP" "$DEST.new"
 mv -f "$DEST.new" "$DEST"
+if [ -f "$DEST_DIR/cloud_redirect_cli.official" ]; then
+    cp -f "$DEST_DIR/cloud_redirect_cli.official" "$DEST_DIR/cloud_redirect_cli.new"
+    mv -f "$DEST_DIR/cloud_redirect_cli.new" "$DEST_DIR/cloud_redirect_cli"
+fi
 echo "==> Official cloudredirect restored. Start Steam again (or reboot)."
