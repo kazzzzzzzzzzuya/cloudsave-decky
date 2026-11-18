@@ -4,6 +4,13 @@ A fork of [CloudRedirect](https://github.com/crghofficial/cloudredirect) by crgh
 focused on SteamOS handhelds (tested target: Lenovo Legion Go). Everything below the line
 is the upstream README.
 
+> **Known blocker (Nov 2026):** SteamOS now runs the **64-bit** Steam client
+> (`~/.local/share/Steam/steamrt64/steam`). `cloud_redirect.so` (upstream and this fork)
+> is 32-bit only, so Steam cannot load it and cloud redirection does not happen at all.
+> SLSsteam already ships a 64-bit build. A 64-bit port of the Steam hooks is needed
+> upstream; the TLS fix below still applies once that exists, and the bundled
+> `cloud_redirect_cli` already benefits from it.
+
 ## What this fork changes
 
 **Google Drive / cloud connection on SteamOS (Linux only)**
