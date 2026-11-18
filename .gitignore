@@ -33,3 +33,6 @@ release-*/
 !tests/deployer_file_tests.cpp
 !tests/linux_preload_lifecycle_tests.cpp
 !tests/linux_external_library_tests.cpp
+
+.cache/
+!tests/linux/
