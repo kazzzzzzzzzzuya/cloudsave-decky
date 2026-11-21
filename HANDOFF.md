@@ -89,10 +89,15 @@ GetAutoCloudFileList: app <APPID> rule root=… resolved='…'   (where it scans
 Timestamps are `[HH:MM:SS]` only, with no date; the device clock is UTC. Combine with file mtimes
 or the cloud `modified_time` for dates.
 
-## Next project: Decky plugin with per-game save status (+ OpenSave)
+## Decky plugin with per-game save status (+ OpenSave): built into the LeGo Toolbox
 
-The user asked whether it's possible (answered **yes, both**) and hasn't said "go" yet.
-**Confirm before building.**
+Decided 2026-11-21: no separate plugin. It is a **Cloud saves** page in
+`kazzzzzzzzzzuya/LeGo-decky-toolbox` (Device → Cloud saves, also under More), version 1.0.5,
+branch `claude/admiring-ride-cm4q9y` (not merged or released yet, **not tested on the device yet**).
+Backend `py_modules/lgo_toolbox/cloud_saves.py`, page `src/tabs/CloudSaves.tsx`,
+tests `tests/test_cloud_saves.py`. OpenSave is used **only for non-Steam games**, through its
+daemon's local API (`~/.opensave/daemon.addr`); Steam games are never synced or backed up by it
+from the toolbox. The plan below is what was built; check on the device what differs.
 
 ### Part 1: cloudredirect status per game (do first)
 
